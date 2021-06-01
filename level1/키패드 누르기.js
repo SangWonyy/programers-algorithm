@@ -33,20 +33,24 @@ function solution(numbers, hand) {
             answer += "R";
             currentPositionR = right[number];
         } else {
-            const middleSum = middle[number][0] + middle[number][1];
-            const leftSum = currentPositionL[0] + currentPositionL[1];
-            const rightSum = currentPositionR[0] + currentPositionR[1];
-            const leftMiddle = Math.abs(middleSum - leftSum);
-            const rightMiddle = Math.abs(middleSum - rightSum);
 
-            if (leftMiddle > rightMiddle) {
+            const leftMiddleX = currentPositionL[0] - middle[number][0];
+            const leftMiddleY = currentPositionL[1] - middle[number][1];
+            const leftSum = Math.abs(leftMiddleX) + Math.abs(leftMiddleY);
+
+            const rightMiddleX = currentPositionR[0] - middle[number][0];
+            const rightMiddleY = currentPositionR[1] - middle[number][1];
+            const rightSum = Math.abs(rightMiddleX) + Math.abs(rightMiddleY);
+
+            if (leftSum > rightSum) {
                 answer += "R";
                 currentPositionR = middle[number];
 
-            } else if (leftMiddle < rightMiddle) {
+            } else if (leftSum < rightSum) {
                 answer += "L";
                 currentPositionL = middle[number];
-            } else if (leftMiddle === rightMiddle) {
+            } else if (leftSum === rightSum) {
+
                 if (hand === 'right') {
                     answer += "R";
                     currentPositionR = middle[number];
@@ -57,6 +61,7 @@ function solution(numbers, hand) {
             }
         }
     })
+
     return answer;
 }
 
