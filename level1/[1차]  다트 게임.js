@@ -12,17 +12,16 @@ function solution(dartResult) {
             point = +(splitString[splitIndex - 1] + value);
             continue;
         }
-
         if (isNumber(value)) {
-            if (point !== 0 ) {
+            if ((splitIndex > 0 && isBonus(splitString[splitIndex - 1]))) {
                 const insertResult = insertAnswer(option, value, answer, index, point, bonus);
                 answer = insertResult.answer;
                 index = insertResult.index;
-                point = 0;
+                point = +value;
                 bonus = 0;
                 option = 0;
+                continue;
             }
-
             point = +value;
         } else if (isBonus(value)) {
             bonus = exChangeBonus(value);
@@ -31,19 +30,23 @@ function solution(dartResult) {
         }
         // 계산 조건 숫자(index !== 0), option
 
-        if(isOption(value)) {
-            console.log('bonus', bonus)
+        if(isOption(value) || splitIndex === splitString.length - 1) {
             const insertResult = insertAnswer(option, value, answer, index, point, bonus);
             answer = insertResult.answer;
             index = insertResult.index;
+            point = 0;
+            bonus = 0;
+            option = 0;
         }
     }
     console.log(answer);
-    return answer;
+    const result = answer.reduce((accumulation, nextValue) => accumulation += nextValue);
+    console.log(result);
+    return result;
 }
 
 const isNumber = (value) => {
-    return !!(+value);
+    return !!(+value || +value === 0);
 }
 
 const isBonus = (value) => {
@@ -86,11 +89,13 @@ const exChangeOption = (value) => {
 }
 
 const insertAnswer = (option, value, answer, index, point, bonus) => {
-    console.log(bonus)
-    option = isNumber(value) ? 1 : option;
+    option = isBonus(value) || isNumber(value) ? 1 : option;
     answer[index] = Math.pow(point, bonus) * option;
     if (index === 1 && value === '*') {
         answer[0] *= 2;
+    }
+    if (index === 2 && value === '*') {
+        answer[1] *= 2;
     }
     ++index
     return {answer, index};
